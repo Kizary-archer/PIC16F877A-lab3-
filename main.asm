@@ -66,17 +66,17 @@ MainLoop:
 GOTO MainLoop
 
 interrupt:
-BCF INTCON,T0IF
-MOVFW MASK
-ANDWF PORTC,F
+BCF INTCON,T0IF ;опускаем флаг счетчика
+MOVFW MASK ; записываем в акк '10000000'(положение индикатора)
+ANDWF PORTC,F ;очистка 
 
-MOVFW VALUE
-XORWF PORTC,F
+MOVFW VALUE 
+XORWF PORTC,F ;выводим правый индикатор
 
-MOVFW MASK
-XORWF PORTC,F
+MOVFW MASK 
+XORWF PORTC,F ;выводим левый индикатор
 
-BSF PORTD,4
+BSF PORTD,4 ;это не нужно(отладка)
 RETFIE
 
 XOR10:
@@ -135,20 +135,20 @@ MOD:
 	SUBWF indicator,1
 	GOTO MainLoop
 
-delay:				;подпрограмма задержки
-	MOVLW 0xd
+delay: ;подпрограмма задержки
+	MOVLW 0xc
 	MOVWF count0
 	MOVLW 0xff
-loop0:
-		MOVWF count1
+	loop0:
+	MOVWF count1
 	loop1:
-			MOVWF count2
-		loop2:
-			DECFSZ count2,F
-			GOTO loop2 ; переход на метку loop2
+	MOVWF count2
+	loop2:
+	DECFSZ count2,F
+	GOTO loop2 ; переход на метку loop2
 
-		DECFSZ count1,F
-		GOTO loop1
+	DECFSZ count1,F
+	GOTO loop1
 	DECFSZ count0,F
 	GOTO loop0
 RETURN

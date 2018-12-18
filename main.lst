@@ -1,4 +1,4 @@
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  1
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[203]: Found opcode in column 1. (goto)
 0010   1683           00037         bsf STATUS,RP0                  ;переходим в банк 1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0011   1181           00038         BCF OPTION_REG,PSA ;? 0=prescaler to tmr0
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  2
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -102,30 +102,30 @@ Warning[203]: Found opcode in column 1. (GOTO)
                       00067 
 0028                  00068 interrupt:
 Warning[203]: Found opcode in column 1. (BCF)
-0028   110B           00069 BCF INTCON,T0IF
+0028   110B           00069 BCF INTCON,T0IF ;опускаем флаг счетчика
 Warning[204]: Found pseudo-op in column 1. (MOVFW)
-0029   0828           00070 MOVFW MASK
+0029   0828           00070 MOVFW MASK ; записываем в акк '10000000'(положение индикатора)
 Warning[203]: Found opcode in column 1. (ANDWF)
-002A   0587           00071 ANDWF PORTC,F
+002A   0587           00071 ANDWF PORTC,F ;очистка 
                       00072 
 Warning[204]: Found pseudo-op in column 1. (MOVFW)
-002B   0820           00073 MOVFW VALUE
+002B   0820           00073 MOVFW VALUE 
 Warning[203]: Found opcode in column 1. (XORWF)
-002C   0687           00074 XORWF PORTC,F
+002C   0687           00074 XORWF PORTC,F ;выводим правый индикатор
                       00075 
 Warning[204]: Found pseudo-op in column 1. (MOVFW)
-002D   0828           00076 MOVFW MASK
+002D   0828           00076 MOVFW MASK 
 Warning[203]: Found opcode in column 1. (XORWF)
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  3
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-002E   0687           00077 XORWF PORTC,F
+002E   0687           00077 XORWF PORTC,F ;выводим левый индикатор
                       00078 
 Warning[203]: Found opcode in column 1. (BSF)
-002F   1608           00079 BSF PORTD,4
+002F   1608           00079 BSF PORTD,4 ;это не нужно(отладка)
 Warning[203]: Found opcode in column 1. (RETFIE)
 0030   0009           00080 RETFIE
                       00081 
@@ -175,49 +175,49 @@ Warning[207]: Found label after column 1. (WAITBUTTON)
 0052   1903           00124         BTFSC  STATUS,Z
 0053   2855           00125         GOTO MOD
                       00126 
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  4
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00127         
-                      00128         ;выводим на индикаторы
-                      00129         ;ждём пока отпустят кнопку
-                      00130         ;вкл прерывание по кнопке
-                      00131         ;переходим в основной цикл
+                      00127         ;выводим на индикаторы
+                      00128         ;ждём пока отпустят кнопку
+                      00129         ;вкл прерывание по кнопке
+                      00130         ;переходим в основной цикл
 Warning[203]: Found opcode in column 1. (GOTO)
-0054   281D           00132 GOTO MainLoop
-                      00133 
-0055                  00134 MOD:
-0055   300A           00135         MOVLW .10
-0056   02A2           00136         SUBWF indicator,1
-0057   281D           00137         GOTO MainLoop
-                      00138 
-0058                  00139 delay:                          ;подпрограмма задержки
-0058   300D           00140         MOVLW 0xd
-0059   00A5           00141         MOVWF count0
-005A   30FF           00142         MOVLW 0xff
-005B                  00143 loop0:
-005B   00A6           00144                 MOVWF count1
+0054   281D           00131 GOTO MainLoop
+                      00132 
+0055                  00133 MOD:
+0055   300A           00134         MOVLW .10
+0056   02A2           00135         SUBWF indicator,1
+0057   281D           00136         GOTO MainLoop
+                      00137 
+0058                  00138 delay: ;подпрограмма задержки
+0058   300C           00139         MOVLW 0xc
+0059   00A5           00140         MOVWF count0
+005A   30FF           00141         MOVLW 0xff
+Warning[207]: Found label after column 1. (loop0)
+005B                  00142         loop0:
+005B   00A6           00143         MOVWF count1
 Warning[207]: Found label after column 1. (loop1)
-005C                  00145         loop1:
-005C   00A7           00146                         MOVWF count2
+005C                  00144         loop1:
+005C   00A7           00145         MOVWF count2
 Warning[207]: Found label after column 1. (loop2)
-005D                  00147                 loop2:
-005D   0BA7           00148                         DECFSZ count2,F
-005E   285D           00149                         GOTO loop2 ; переход на метку loop2
-                      00150 
-005F   0BA6           00151                 DECFSZ count1,F
-0060   285C           00152                 GOTO loop1
-0061   0BA5           00153         DECFSZ count0,F
-0062   285B           00154         GOTO loop0
+005D                  00146         loop2:
+005D   0BA7           00147         DECFSZ count2,F
+005E   285D           00148         GOTO loop2 ; переход на метку loop2
+                      00149 
+005F   0BA6           00150         DECFSZ count1,F
+0060   285C           00151         GOTO loop1
+0061   0BA5           00152         DECFSZ count0,F
+0062   285B           00153         GOTO loop0
 Warning[203]: Found opcode in column 1. (RETURN)
-0063   0008           00155 RETURN
-                      00156 
+0063   0008           00154 RETURN
+                      00155 
 Warning[205]: Found directive in column 1. (END)
-                      00157 END
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  5
+                      00156 END
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  5
 
 
 SYMBOL TABLE
@@ -276,7 +276,7 @@ CHS0                              00000003
 CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  6
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  6
 
 
 SYMBOL TABLE
@@ -335,7 +335,7 @@ INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
 MASK                              00000028
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  7
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  7
 
 
 SYMBOL TABLE
@@ -394,7 +394,7 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  8
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  8
 
 
 SYMBOL TABLE
@@ -453,7 +453,7 @@ SPBRG                             00000099
 SPEN                              00000007
 SREN                              00000005
 SSPADD                            00000093
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  9
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE  9
 
 
 SYMBOL TABLE
@@ -512,7 +512,7 @@ TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
 TRISB                             00000086
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 10
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE 10
 
 
 SYMBOL TABLE
@@ -571,7 +571,7 @@ Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
 _BOREN_OFF                        00003FBF
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 11
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE 11
 
 
 SYMBOL TABLE
@@ -625,7 +625,7 @@ loop1                             0000005C
 loop2                             0000005D
 right                             00000021
 ws                                00000023
-MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 12
+MPASM  5.43                          MAIN.ASM   12-19-2018  1:53:43         PAGE 12
 
 
 MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
@@ -642,7 +642,7 @@ Program Memory Words Free:  8095
 
 
 Errors   :     0
-Warnings :    24 reported,     0 suppressed
+Warnings :    25 reported,     0 suppressed
 Messages :     5 reported,     0 suppressed
 
 
