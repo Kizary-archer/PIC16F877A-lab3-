@@ -1,0 +1,7 @@
+Warning[205] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 3 : Found directive in column 1. (__CONFIG)
+Warning[205] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 10 : Found directive in column 1. (ORG)
+Warning[203] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 11 : Found opcode in column 1. (GOTO)
+Warning[205] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 13 : Found directive in column 1. (ORG)
+Warning[203] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 15 : Found opcode in column 1. (RETFIE)
+Warning[203] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 43 : Found opcode in column 1. (GOTO)
+Warning[203] D:\MAX\PIC16F877A-LAB3-\MAIN.ASM 92 : Found opcode in column 1. (GOTO)
