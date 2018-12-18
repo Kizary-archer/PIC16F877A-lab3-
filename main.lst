@@ -1,4 +1,4 @@
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  1
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -18,120 +18,206 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 Warning[205]: Found directive in column 1. (__CONFIG)
 2007   3FF2           00003 __CONFIG(_CP_OFF&_PWRTE_ON&_WDT_OFF&_HS_OSC)
                       00004 
-  00000020            00005 left EQU 20h
-  00000021            00006 right EQU 21h
-  00000022            00007 indicator EQU 22h
-  00000023            00008 ws EQU 23h
-                      00009 
+  00000020            00005 VALUE EQU 20h
+  00000028            00006 MASK EQU 28h
+  00000021            00007 right EQU 21h
+  00000022            00008 indicator EQU 22h
+  00000023            00009 ws EQU 23h
+  00000025            00010 count0 equ 25h  ; задаЄм символьные обозначение €чеек пам€ти, расположенных по адресам 25h, 26h, 27h 
+  00000026            00011 count1 equ 26h
+  00000027            00012 count2 equ 27h
+                      00013 
 Warning[205]: Found directive in column 1. (ORG)
-0000                  00010 ORG 0
+0000                  00014 ORG 0
 Warning[203]: Found opcode in column 1. (GOTO)
-0000   2810           00011 GOTO Start
-                      00012 
-Warning[205]: Found directive in column 1. (ORG)
-0004                  00013 ORG 4
-                      00014 ;CALL interrupt
-Warning[203]: Found opcode in column 1. (RETFIE)
-0004   0009           00015 RETFIE
+0000   2810           00015 GOTO Start
                       00016 
-0005                  00017 array:
-0005   0782           00018         ADDWF PCL, F
-0006   3490           00019         RETLW B'10010000' ;0
-0007   34DB           00020         RETLW B'11011011' ;1
-0008   348C           00021         RETLW B'10001100' ;2
-0009   3489           00022         RETLW B'10001001' ;3
-000A   34C3           00023         RETLW B'11000011' ;4
-000B   34A1           00024         RETLW B'10100001' ;5
-000C   34A0           00025         RETLW B'10100000' ;6
-000D   349B           00026         RETLW B'10011011' ;7
-000E   3480           00027         RETLW B'10000000' ;8
-000F   3481           00028         RETLW B'10000001' ;9
-                      00029 
-0010                  00030 Start:
-                      00031 
-0010   01A2           00032         CLRF indicator
-0011   01A1           00033         CLRF right
+Warning[205]: Found directive in column 1. (ORG)
+0004                  00017 ORG 4
+Warning[203]: Found opcode in column 1. (goto)
+0004   2828           00018 goto interrupt
+                      00019 
+                      00020 
+0005                  00021 array:
+0005   0782           00022         ADDWF PCL, F
+0006   3410           00023         RETLW B'00010000' ;0
+0007   345B           00024         RETLW B'01011011' ;1
+0008   340C           00025         RETLW B'00001100' ;2
+0009   3409           00026         RETLW B'00001001' ;3
+000A   3443           00027         RETLW B'01000011' ;4
+000B   3421           00028         RETLW B'00100001' ;5
+000C   3420           00029         RETLW B'00100000' ;6
+000D   341B           00030         RETLW B'00011011' ;7
+000E   3400           00031         RETLW B'00000000' ;8
+000F   3401           00032         RETLW B'00000001' ;9
+                      00033 
                       00034 
-0012                  00035 MainLoop:
+0010                  00035 Start:
                       00036 
-0012   2017           00037         CALL XOR10
-0013   0822           00038         MOVFW indicator
-0014   2005           00039         CALL array 
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  2
+0010   1683           00037         bsf STATUS,RP0                  ;переходим в банк 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0011   1181           00038         BCF OPTION_REG,PSA ;? 0=prescaler to tmr0
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0015   0AA2           00040         INCF indicator,1
-                      00041         ;GOTO interrupt
-                      00042 
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0012   1281           00039         BCF OPTION_REG,T0CS ;? 0=internal clco, 1=source ra4/t0cki pin
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0013   0187           00040         CLRF TRISC
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0014   0188           00041         CLRF TRISD
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0015   1706           00042         BSF TRISB,.6 ;кнопка                            
+0016   1283           00043         BCF STATUS,RP0          ;переходим в банк 0     
+0017   168B           00044         BSF INTCON,T0IE
+0018   178B           00045         BSF INTCON,GIE
+Warning[203]: Found opcode in column 1. (MOVLW)
+0019   3080           00046 MOVLW 0x80
+Warning[203]: Found opcode in column 1. (MOVWF)
+001A   00A8           00047 MOVWF MASK
+Warning[203]: Found opcode in column 1. (CLRF)
+001B   0188           00048 CLRF PORTD
+                      00049 
+001C   01A2           00050         CLRF indicator
+                      00051 
+001D                  00052 MainLoop:
+                      00053         
+001D   2031           00054         CALL XOR10
+001E   0822           00055         MOVFW indicator
+001F   2005           00056         CALL array 
+0020   00A0           00057         MOVWF VALUE
+                      00058         ;MOVWF PORTC
+0021   2058           00059         CALL delay
+0022   2058           00060         CALL delay
+0023   2058           00061         CALL delay
+0024   1F06           00062         BTFSS PORTB,.6 ;нажатие кнопки
+0025   2837           00063         GOTO BUTTON_CLICK
+0026   0AA2           00064         INCF indicator,1
+                      00065 
 Warning[203]: Found opcode in column 1. (GOTO)
-0016   2812           00043 GOTO MainLoop
-                      00044 
-0017                  00045 XOR10:
-                      00046 
-0017   0822           00047     MOVF indicator,W 
-0018   1103           00048     BCF  STATUS,Z 
-0019   3A0A           00049     XORLW .10    
-001A   1903           00050     BTFSC  STATUS,Z 
-001B   2810           00051         GOTO Start
-001C   0008           00052         RETURN
-                      00053 
-001D                  00054 interrupt:
-                      00055 
-                      00056         ;вык прерывание по кнопке
-                      00057         ;умножаем число на 2
-001D   0822           00058         MOVF indicator,W 
-001E   07A2           00059         ADDWF indicator,1
-                      00060         ;получаем mod 10 числа
-001F   1103           00061         BCF  STATUS,Z
-0020   00A3           00062         MOVWF ws
-0021   3A05           00063         XORLW .5 
-0022   1903           00064         BTFSC  STATUS,Z
-0023   2839           00065         GOTO MOD
-0024   0823           00066         MOVF ws,W
-0025   1103           00067         BCF  STATUS,Z
-0026   3A06           00068         XORLW .6 
-0027   1903           00069         BTFSC  STATUS,Z
-0028   2839           00070         GOTO MOD
-0029   0823           00071         MOVF ws,W
-002A   1103           00072         BCF  STATUS,Z
-002B   3A07           00073         XORLW .7 
-002C   1903           00074         BTFSC  STATUS,Z
-002D   2839           00075         GOTO MOD
-002E   0823           00076         MOVF ws,W
-002F   1103           00077         BCF  STATUS,Z
-0030   3A08           00078         XORLW .8 
-0031   1903           00079         BTFSC  STATUS,Z
-0032   2839           00080         GOTO MOD
-0033   0823           00081         MOVF ws,W
-0034   1103           00082         BCF  STATUS,Z
-0035   3A09           00083         XORLW .9 
-0036   1903           00084         BTFSC  STATUS,Z
-0037   2839           00085         GOTO MOD
-                      00086 
-                      00087         
-                      00088         ;выводим на индикаторы
-                      00089         ;ждЄм пока отпуст€т кнопку
-                      00090         ;вкл прерывание по кнопке
-                      00091         ;переходим в основной цикл
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  3
+0027   281D           00066 GOTO MainLoop
+                      00067 
+0028                  00068 interrupt:
+Warning[203]: Found opcode in column 1. (BCF)
+0028   110B           00069 BCF INTCON,T0IF
+Warning[204]: Found pseudo-op in column 1. (MOVFW)
+0029   0828           00070 MOVFW MASK
+Warning[203]: Found opcode in column 1. (ANDWF)
+002A   0587           00071 ANDWF PORTC,F
+                      00072 
+Warning[204]: Found pseudo-op in column 1. (MOVFW)
+002B   0820           00073 MOVFW VALUE
+Warning[203]: Found opcode in column 1. (XORWF)
+002C   0687           00074 XORWF PORTC,F
+                      00075 
+Warning[204]: Found pseudo-op in column 1. (MOVFW)
+002D   0828           00076 MOVFW MASK
+Warning[203]: Found opcode in column 1. (XORWF)
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+002E   0687           00077 XORWF PORTC,F
+                      00078 
+Warning[203]: Found opcode in column 1. (BSF)
+002F   1608           00079 BSF PORTD,4
+Warning[203]: Found opcode in column 1. (RETFIE)
+0030   0009           00080 RETFIE
+                      00081 
+0031                  00082 XOR10:
+                      00083 
+0031   0822           00084     MOVF indicator,W 
+0032   1103           00085     BCF  STATUS,Z 
+0033   3A0A           00086     XORLW .10    
+0034   1903           00087     BTFSC  STATUS,Z 
+0035   2810           00088         GOTO Start
+0036   0008           00089         RETURN
+                      00090 
+0037                  00091 BUTTON_CLICK:
+                      00092 
+Warning[207]: Found label after column 1. (WAITBUTTON)
+0037                  00093         WAITBUTTON:
+0037   1F06           00094         BTFSS PORTB,.6 ;нажатие кнопки
+0038   2837           00095         GOTO WAITBUTTON
+                      00096         ;вык прерывание по кнопке
+                      00097         ;умножаем число на 2
+0039   0822           00098         MOVF indicator,W 
+003A   07A2           00099         ADDWF indicator,1
+                      00100         ;получаем mod 10 числа
+003B   1103           00101         BCF  STATUS,Z
+003C   00A3           00102         MOVWF ws
+003D   3A05           00103         XORLW .5 
+003E   1903           00104         BTFSC  STATUS,Z
+003F   2855           00105         GOTO MOD
+0040   0823           00106         MOVF ws,W
+0041   1103           00107         BCF  STATUS,Z
+0042   3A06           00108         XORLW .6 
+0043   1903           00109         BTFSC  STATUS,Z
+0044   2855           00110         GOTO MOD
+0045   0823           00111         MOVF ws,W
+0046   1103           00112         BCF  STATUS,Z
+0047   3A07           00113         XORLW .7 
+0048   1903           00114         BTFSC  STATUS,Z
+0049   2855           00115         GOTO MOD
+004A   0823           00116         MOVF ws,W
+004B   1103           00117         BCF  STATUS,Z
+004C   3A08           00118         XORLW .8 
+004D   1903           00119         BTFSC  STATUS,Z
+004E   2855           00120         GOTO MOD
+004F   0823           00121         MOVF ws,W
+0050   1103           00122         BCF  STATUS,Z
+0051   3A09           00123         XORLW .9 
+0052   1903           00124         BTFSC  STATUS,Z
+0053   2855           00125         GOTO MOD
+                      00126 
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00127         
+                      00128         ;выводим на индикаторы
+                      00129         ;ждЄм пока отпуст€т кнопку
+                      00130         ;вкл прерывание по кнопке
+                      00131         ;переходим в основной цикл
 Warning[203]: Found opcode in column 1. (GOTO)
-0038   2812           00092 GOTO MainLoop
-                      00093 
-0039                  00094 MOD:
-0039   300A           00095         MOVLW .10
-003A   02A2           00096         SUBWF indicator,1
-003B   2812           00097         GOTO MainLoop
-                      00098 
-                      00099         END
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  4
+0054   281D           00132 GOTO MainLoop
+                      00133 
+0055                  00134 MOD:
+0055   300A           00135         MOVLW .10
+0056   02A2           00136         SUBWF indicator,1
+0057   281D           00137         GOTO MainLoop
+                      00138 
+0058                  00139 delay:                          ;подпрограмма задержки
+0058   300D           00140         MOVLW 0xd
+0059   00A5           00141         MOVWF count0
+005A   30FF           00142         MOVLW 0xff
+005B                  00143 loop0:
+005B   00A6           00144                 MOVWF count1
+Warning[207]: Found label after column 1. (loop1)
+005C                  00145         loop1:
+005C   00A7           00146                         MOVWF count2
+Warning[207]: Found label after column 1. (loop2)
+005D                  00147                 loop2:
+005D   0BA7           00148                         DECFSZ count2,F
+005E   285D           00149                         GOTO loop2 ; переход на метку loop2
+                      00150 
+005F   0BA6           00151                 DECFSZ count1,F
+0060   285C           00152                 GOTO loop1
+0061   0BA5           00153         DECFSZ count0,F
+0062   285B           00154         GOTO loop0
+Warning[203]: Found opcode in column 1. (RETURN)
+0063   0008           00155 RETURN
+                      00156 
+Warning[205]: Found directive in column 1. (END)
+                      00157 END
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  5
 
 
 SYMBOL TABLE
@@ -156,6 +242,7 @@ BCLIE                             00000003
 BCLIF                             00000003
 BF                                00000000
 BRGH                              00000002
+BUTTON_CLICK                      00000037
 C                                 00000000
 C1INV                             00000004
 C1OUT                             00000006
@@ -189,13 +276,13 @@ CHS0                              00000003
 CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
-CKE                               00000006
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  5
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  6
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CKE                               00000006
 CKP                               00000004
 CM0                               00000000
 CM1                               00000001
@@ -247,14 +334,15 @@ INTE                              00000004
 INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
-MOD                               00000039
-MainLoop                          00000012
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  6
+MASK                              00000028
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  7
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+MOD                               00000055
+MainLoop                          0000001D
 NOT_A                             00000005
 NOT_ADDRESS                       00000005
 NOT_BO                            00000000
@@ -306,14 +394,14 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-RB0                               00000000
-RB1                               00000001
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  7
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  8
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RB0                               00000000
+RB1                               00000001
 RB2                               00000002
 RB3                               00000003
 RB4                               00000004
@@ -365,14 +453,14 @@ SPBRG                             00000099
 SPEN                              00000007
 SREN                              00000005
 SSPADD                            00000093
-SSPBUF                            00000013
-SSPCON                            00000014
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  8
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE  9
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSPBUF                            00000013
+SSPCON                            00000014
 SSPCON2                           00000091
 SSPEN                             00000005
 SSPIE                             00000003
@@ -424,14 +512,14 @@ TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
 TRISB                             00000086
-TRISB0                            00000000
-TRISB1                            00000001
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE  9
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 10
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISB0                            00000000
+TRISB1                            00000001
 TRISB2                            00000002
 TRISB3                            00000003
 TRISB4                            00000004
@@ -471,26 +559,28 @@ TXIF                              00000004
 TXREG                             00000019
 TXSTA                             00000098
 UA                                00000001
+VALUE                             00000020
 W                                 00000000
+WAITBUTTON                        00000037
 WCOL                              00000007
 WR                                00000001
 WREN                              00000002
 WRERR                             00000003
-XOR10                             00000017
+XOR10                             00000031
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
 _BOREN_OFF                        00003FBF
-_BOREN_ON                         00003FFF
-_CONFIG                           00002007
-_CPD_OFF                          00003FFF
-_CPD_ON                           00003EFF
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE 10
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 11
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
 _CP_ALL                           00001FFF
 _CP_OFF                           00003FFF
 _CP_ON                            00001FFF
@@ -524,32 +614,35 @@ _XT_OSC                           00003FFD
 __16F877A                         00000001
 __DEBUG                           1
 array                             00000005
+count0                            00000025
+count1                            00000026
+count2                            00000027
+delay                             00000058
 indicator                         00000022
-interrupt                         0000001D
-left                              00000020
+interrupt                         00000028
+loop0                             0000005B
+loop1                             0000005C
+loop2                             0000005D
 right                             00000021
 ws                                00000023
+MPASM  5.43                          MAIN.ASM   2-5-2019  16:03:57         PAGE 12
 
 
 MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
 
-0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXX----
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXX------------ ----------------
 2000 : -------X-------- ---------------- ---------------- ----------------
 
 All other memory blocks unused.
 
-Program Memory Words Used:    57
-Program Memory Words Free:  8135
-
-
-MPASM  5.43                          MAIN.ASM   12-18-2018  5:42:34         PAGE 11
-
-
-
+Program Memory Words Used:    97
+Program Memory Words Free:  8095
 
 
 Errors   :     0
-Warnings :     7 reported,     0 suppressed
-Messages :     0 reported,     0 suppressed
+Warnings :    24 reported,     0 suppressed
+Messages :     5 reported,     0 suppressed
 
 
