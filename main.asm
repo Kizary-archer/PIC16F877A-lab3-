@@ -34,13 +34,13 @@ array: ;массив битовых масок для индикатора
 Start:
 
 	bsf STATUS,RP0			;переходим в банк 1
-	BCF OPTION_REG,PSA ;? 0=prescaler to tmr0
-	BCF OPTION_REG,T0CS ;? 0=internal clco, 1=source ra4/t0cki pin
+	BCF OPTION_REG,PSA ; 0-прескаллер для tmr0
+	BCF OPTION_REG,T0CS ;T0CS = 0 - TMR0 работает от внешнего с входа RA1/T0CKI
 	CLRF TRISC
 	BSF TRISB,6 ;кнопка				
 	BCF STATUS,RP0	;переходим в банк 0	
-	BSF INTCON,T0IE
-	BSF INTCON,GIE
+	BSF INTCON,T0IE ;разрешение прерываний по переполнению от TMR0
+	BSF INTCON,GIE ;глобальное разрешение прерываний.
 	MOVLW 0x80
 	MOVWF MASK
 	CLRF indicator
