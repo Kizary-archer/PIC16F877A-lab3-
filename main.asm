@@ -4,7 +4,6 @@ __CONFIG(_CP_OFF&_PWRTE_ON&_WDT_OFF&_HS_OSC)
 
 VALUE EQU 20h
 MASK EQU 28h
-right EQU 21h
 indicator EQU 22h
 ws EQU 23h
 count0 equ 25h	; задаЄм символьные обозначение €чеек пам€ти, расположенных по адресам 25h, 26h, 27h 
@@ -15,10 +14,10 @@ ORG 0
 GOTO Start
 
 ORG 4
-goto interrupt
+goto interrupt ;обработчик прерывани€
 
 
-array:
+array: ;массив битовых масок дл€ индикатора
 	ADDWF PCL, F
 	RETLW B'00010000' ;0
 	RETLW B'01011011' ;1
@@ -38,15 +37,12 @@ Start:
 	BCF OPTION_REG,PSA ;? 0=prescaler to tmr0
 	BCF OPTION_REG,T0CS ;? 0=internal clco, 1=source ra4/t0cki pin
 	CLRF TRISC
-	CLRF TRISD
-	BSF TRISB,.6 ;кнопка				
-	BCF STATUS,RP0		;переходим в банк 0	
+	BSF TRISB,6 ;кнопка				
+	BCF STATUS,RP0	;переходим в банк 0	
 	BSF INTCON,T0IE
 	BSF INTCON,GIE
-MOVLW 0x80
-MOVWF MASK
-CLRF PORTD
-
+	MOVLW 0x80
+	MOVWF MASK
 	CLRF indicator
 
 MainLoop:
@@ -55,11 +51,8 @@ MainLoop:
 	MOVFW indicator
 	CALL array 
 	MOVWF VALUE
-	;MOVWF PORTC
 	CALL delay
-	CALL delay
-	CALL delay
-	BTFSS PORTB,.6 ;нажатие кнопки
+	BTFSS PORTB,6 ;нажатие кнопки
 	GOTO BUTTON_CLICK
 	INCF indicator,1
 
@@ -75,11 +68,9 @@ XORWF PORTC,F ;выводим правый индикатор
 
 MOVFW MASK 
 XORWF PORTC,F ;выводим левый индикатор
+RETFIE ;возврат из прерывани€
 
-BSF PORTD,4 ;это не нужно(отладка)
-RETFIE
-
-XOR10:
+XOR10:;if(indicator=10)
 
     MOVF indicator,W 
     BCF  STATUS,Z 
@@ -91,18 +82,17 @@ XOR10:
 BUTTON_CLICK:
 
 	WAITBUTTON:
-	BTFSS PORTB,.6 ;нажатие кнопки
+	BTFSS PORTB,6 ;нажатие кнопки
 	GOTO WAITBUTTON
-	;вык прерывание по кнопке
 	;умножаем число на 2
 	MOVF indicator,W 
 	ADDWF indicator,1
 	;получаем mod 10 числа
-	BCF  STATUS,Z
-	MOVWF ws
-	XORLW .5 
-	BTFSC  STATUS,Z
-	GOTO MOD
+	BCF  STATUS,Z ;опускаем флаг z
+	MOVWF ws ;сохран€ем аккумул€тор
+	XORLW .5 ;сключающее или аккумул€тора и числа 5
+	BTFSC  STATUS,Z ;если числа совпадают
+	GOTO MOD ;переходим на метку MOD 
 	MOVF ws,W
 	BCF  STATUS,Z
 	XORLW .6 
@@ -124,15 +114,11 @@ BUTTON_CLICK:
 	BTFSC  STATUS,Z
 	GOTO MOD
 
-	;выводим на индикаторы
-	;ждЄм пока отпуст€т кнопку
-	;вкл прерывание по кнопке
-	;переходим в основной цикл
-GOTO MainLoop
+GOTO MainLoop 	;переходим в основной цикл
 
-MOD:
+MOD: ;получаем MOD10 числа 
 	MOVLW .10
-	SUBWF indicator,1
+	SUBWF indicator,F
 	GOTO MainLoop
 
 delay: ;подпрограмма задержки

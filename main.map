@@ -1,12 +1,12 @@
 MPLINK 4.41, Linker
-Linker Map File - Created Wed Dec 19 01:53:44 2018
+Linker Map File - Created Tue Dec 25 21:21:11 2018
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x0000c0
+                   .org_2       code   0x000004    program   0x0000b6
       .config_2007_MAIN.O       code   0x002007    program   0x000002
 
 
@@ -15,27 +15,27 @@ Linker Map File - Created Wed Dec 19 01:53:44 2018
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x000063      
+                            0x000004    0x00005e      
                             0x002007    0x002007      
-            98 out of 8454 program addresses used, program memory utilization is 1%
+            93 out of 8454 program addresses used, program memory utilization is 1%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-             BUTTON_CLICK   0x000037    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                      MOD   0x000055    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                 MainLoop   0x00001d    program     static D:\Max\PIC16F877A-lab3-\main.asm
+             BUTTON_CLICK   0x000032    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                      MOD   0x000050    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                 MainLoop   0x00001b    program     static D:\Max\PIC16F877A-lab3-\main.asm
                     Start   0x000010    program     static D:\Max\PIC16F877A-lab3-\main.asm
-               WAITBUTTON   0x000037    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    XOR10   0x000031    program     static D:\Max\PIC16F877A-lab3-\main.asm
+               WAITBUTTON   0x000032    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    XOR10   0x00002c    program     static D:\Max\PIC16F877A-lab3-\main.asm
                     array   0x000005    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    delay   0x000058    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                interrupt   0x000028    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop0   0x00005b    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop1   0x00005c    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop2   0x00005d    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    delay   0x000053    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                interrupt   0x000024    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop0   0x000056    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop1   0x000057    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop2   0x000058    program     static D:\Max\PIC16F877A-lab3-\main.asm
 
 
 
@@ -44,15 +44,15 @@ Linker Map File - Created Wed Dec 19 01:53:44 2018
                 ---------  ---------  ---------  --------- ---------                
                     array   0x000005    program     static D:\Max\PIC16F877A-lab3-\main.asm
                     Start   0x000010    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                 MainLoop   0x00001d    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                interrupt   0x000028    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    XOR10   0x000031    program     static D:\Max\PIC16F877A-lab3-\main.asm
-             BUTTON_CLICK   0x000037    program     static D:\Max\PIC16F877A-lab3-\main.asm
-               WAITBUTTON   0x000037    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                      MOD   0x000055    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    delay   0x000058    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop0   0x00005b    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop1   0x00005c    program     static D:\Max\PIC16F877A-lab3-\main.asm
-                    loop2   0x00005d    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                 MainLoop   0x00001b    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                interrupt   0x000024    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    XOR10   0x00002c    program     static D:\Max\PIC16F877A-lab3-\main.asm
+             BUTTON_CLICK   0x000032    program     static D:\Max\PIC16F877A-lab3-\main.asm
+               WAITBUTTON   0x000032    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                      MOD   0x000050    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    delay   0x000053    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop0   0x000056    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop1   0x000057    program     static D:\Max\PIC16F877A-lab3-\main.asm
+                    loop2   0x000058    program     static D:\Max\PIC16F877A-lab3-\main.asm
 
 
